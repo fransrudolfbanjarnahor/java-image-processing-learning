@@ -1,6 +1,7 @@
 package application;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -19,6 +20,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.stage.FileChooser;
 
 public class MainController implements Initializable {
@@ -32,10 +35,14 @@ public class MainController implements Initializable {
 	Slider threshold;
 
 	@FXML
-	Label tSize;
+	Slider spinnerResize;
+
+	@FXML
+	Label tSize, rSize;
 
 	Matriks m;
 	int[][] bdata;
+
 	public void browseImage(ActionEvent event) throws IOException {
 		FileChooser fc = new FileChooser();
 		FileChooser.ExtensionFilter jpgFilter = new FileChooser.ExtensionFilter("JPG Files", "*.jpg");
@@ -45,8 +52,11 @@ public class MainController implements Initializable {
 		File selectedFile = fc.showOpenDialog(null);
 		if (selectedFile != null) {
 			bImage = ImageIO.read(selectedFile);
+			img.setFitWidth(bImage.getWidth());
+			img.setFitHeight(bImage.getHeight());
 			img.setImage(SwingFXUtils.toFXImage(bImage, null));
 			bdata = new int[bImage.getWidth()][bImage.getHeight()];
+
 		}
 	}
 
@@ -71,6 +81,33 @@ public class MainController implements Initializable {
 			}
 		}
 		img.setImage(SwingFXUtils.toFXImage(im, null));
+
+	}
+
+	private BufferedImage resizeImage(BufferedImage image, double w, double h, double rasio) {
+		//System.out.println("resizeImage " + w + ":" + h + " rasio " + rasio);
+		int type = 0;
+		type = image.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : image.getType();
+		double r = rasio / 100d;
+		double nw = (w * r);
+		double nh = (h * r);
+
+		//System.out.println("resizeImage " + nw + ":" + nh + " rasio " + r);
+
+		BufferedImage resizedImage = new BufferedImage((int) nw, (int) nh, type);
+		Graphics2D g = resizedImage.createGraphics();
+		g.drawImage(image, 0, 0, (int) nw, (int) nh, null);
+		g.dispose();
+		return resizedImage;
+	}
+
+	public void resize(ScrollEvent event, int value) throws IOException {
+		//System.out.println("resize " + value + ":" + bImage.getWidth() + " : " + bImage.getHeight());
+		im = resizeImage(bImage, (double) bImage.getWidth(), (double) bImage.getHeight(), (double) value);
+		img.setFitWidth(im.getWidth());
+		img.setFitHeight(im.getHeight());
+		img.setImage(SwingFXUtils.toFXImage(im, null));
+
 	}
 
 	public void citraBiner(ActionEvent event) throws IOException {
@@ -140,32 +177,32 @@ public class MainController implements Initializable {
 		}
 		img.setImage(SwingFXUtils.toFXImage(im, null));
 	}
-	
+
 	public void flipHorizontal(ActionEvent event) throws IOException {
 		im = new BufferedImage(bImage.getWidth(), bImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		for (int i = 0; i < bImage.getWidth(); i++) {
 			for (int j = 0; j < bImage.getHeight(); j++) {
-				im.setRGB(bImage.getWidth()-i-1, j, bImage.getRGB(i, j));
+				im.setRGB(bImage.getWidth() - i - 1, j, bImage.getRGB(i, j));
 			}
 		}
 		img.setImage(SwingFXUtils.toFXImage(im, null));
 	}
-	
+
 	public void flipVertical(ActionEvent event) throws IOException {
 		im = new BufferedImage(bImage.getWidth(), bImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		for (int i = 0; i < bImage.getWidth(); i++) {
 			for (int j = 0; j < bImage.getHeight(); j++) {
-				im.setRGB(i, bImage.getHeight()-j-1, bImage.getRGB(i, j));
+				im.setRGB(i, bImage.getHeight() - j - 1, bImage.getRGB(i, j));
 			}
 		}
 		img.setImage(SwingFXUtils.toFXImage(im, null));
 	}
-	
+
 	public void flipHorizontalVertical(ActionEvent event) throws IOException {
 		im = new BufferedImage(bImage.getWidth(), bImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		for (int i = 0; i < bImage.getWidth(); i++) {
 			for (int j = 0; j < bImage.getHeight(); j++) {
-				im.setRGB(bImage.getWidth()-i-1, bImage.getHeight()-j-1, bImage.getRGB(i, j));
+				im.setRGB(bImage.getWidth() - i - 1, bImage.getHeight() - j - 1, bImage.getRGB(i, j));
 			}
 		}
 		img.setImage(SwingFXUtils.toFXImage(im, null));
@@ -191,16 +228,33 @@ public class MainController implements Initializable {
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				tSize.setText(String.valueOf(newValue.intValue()));
 				try {
-					citraBiner(null);
+					if (bImage != null) {
+						citraBiner(null);
+
+					}
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 		});
+		spinnerResize.valueProperty().addListener(new ChangeListener<Number>() {
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				rSize.setText(String.valueOf(newValue.intValue()));
+				try {
+					if (bImage != null) {
+						resize(null, newValue.intValue());
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+
 	}
-	
-	
+
 	public void debugMatrix() throws FileNotFoundException {
 		m = new Matriks(bdata);
 		m.writeToFile();

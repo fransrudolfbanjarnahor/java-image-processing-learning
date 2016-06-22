@@ -6,24 +6,26 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane onMouseReleased="#citraBiner" prefHeight="605.0" prefWidth="834.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MainController">
+<AnchorPane onMouseReleased="#citraBiner" prefHeight="605.0" prefWidth="821.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MainController">
    <children>
       <Button layoutX="14.0" layoutY="21.0" mnemonicParsing="false" onAction="#browseImage" text="Browse" />
-      <ImageView fx:id="img" fitHeight="441.0" fitWidth="809.0" layoutX="14.0" layoutY="60.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="img" fitHeight="17.0" fitWidth="17.0" layoutX="14.0" layoutY="60.0" pickOnBounds="true" preserveRatio="true" smooth="false" />
       <Button layoutX="16.0" layoutY="510.0" mnemonicParsing="false" onAction="#grayScale" text="GrayScale" />
       <Button layoutX="283.0" layoutY="510.0" mnemonicParsing="false" onAction="#citraBiner" text="Binary" />
       <Button layoutX="111.0" layoutY="510.0" mnemonicParsing="false" onAction="#negative" text="Negative" />
       <Button layoutX="14.0" layoutY="564.0" mnemonicParsing="false" onAction="#red" text="R" />
       <Button layoutX="46.0" layoutY="564.0" mnemonicParsing="false" onAction="#green" text="G" />
       <Button layoutX="84.0" layoutY="564.0" mnemonicParsing="false" onAction="#blue" text="B" />
-      <Button layoutX="128.0" layoutY="564.0" mnemonicParsing="false" text="Button" />
-      <Slider fx:id="threshold" blockIncrement="1.0" layoutX="358.0" layoutY="516.0" max="255.0" onContextMenuRequested="#citraBiner" value="100.0" />
-      <Button fx:id="btnApply" layoutX="755.0" layoutY="21.0" mnemonicParsing="false" onAction="#applyImage" text="Apply" />
+      <Slider fx:id="threshold" blockIncrement="1.0" layoutX="349.0" layoutY="516.0" max="255.0" onContextMenuRequested="#citraBiner" value="100.0" />
+      <Button fx:id="btnApply" layoutX="747.0" layoutY="21.0" mnemonicParsing="false" onAction="#applyImage" text="Apply" />
       <Label fx:id="tSize" layoutX="498.0" layoutY="516.0" text="100" />
       <Button layoutX="596.0" layoutY="510.0" mnemonicParsing="false" onAction="#flipVertical" text="Flip Vertical" />
       <Button layoutX="693.0" layoutY="510.0" mnemonicParsing="false" onAction="#flipHorizontal" text="Flip Horizontal" />
       <Button layoutX="596.0" layoutY="551.0" mnemonicParsing="false" onAction="#flipHorizontalVertical" text="Flip Both" />
       <Button layoutX="282.0" layoutY="545.0" mnemonicParsing="false" onAction="#debugMatrix" text="Debug Matrix" />
-      <Slider fx:id="spinnerResize" layoutX="114.0" layoutY="27.0" />
+      <Slider fx:id="spinnerResize" layoutX="263.0" layoutY="27.0" min="1.0" snapToTicks="true" value="100.0" />
+      <Label alignment="CENTER_RIGHT" contentDisplay="CENTER" layoutX="184.0" layoutY="27.0" prefHeight="17.0" prefWidth="64.0" text="Resize" textAlignment="RIGHT" />
+      <Label layoutX="356.0" layoutY="502.0" prefHeight="17.0" prefWidth="126.0" text="Threshold" />
+      <Label fx:id="rSize" alignment="TOP_LEFT" contentDisplay="CENTER" layoutX="403.0" layoutY="27.0" prefHeight="17.0" prefWidth="64.0" text="1-100" textAlignment="RIGHT" />
    </children>
 </AnchorPane>
